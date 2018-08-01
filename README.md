@@ -1,3 +1,5 @@
+[![](https://img.shields.io/docker/pulls/lapinlabs/watcom.svg)](https://hub.docker.com/r/lapinlabs/watcom/)
+
 # Watcom Docker Build Environment
 
 The purpose of this image is to provide a pre-built environment for the [OpenWatcom V2](https://github.com/open-watcom/open-watcom-v2/blob/master/projects.txt) packages.
