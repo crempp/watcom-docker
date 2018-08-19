@@ -78,3 +78,10 @@ wmake         - watcom make
 wsplice       - text file processor
 yacc          - yet another compiler-compiler
 ```
+
+## Building the image
+
+```
+$ docker build -t lapinlabs/watcom .
+$ docker push lapinlabs/watcom
+```

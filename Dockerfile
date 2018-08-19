@@ -1,16 +1,22 @@
+# Watcom Docker Build Environment
+#
+# To build use:
+# docker build -t lapinlabs/watcom .
 FROM alpine:3.8
+MAINTAINER Chad Rempp <crempp@gmail.com>
 
-# Dependencies
-RUN apk add --no-cache --update \
+LABEL description="An OpenWatcom V2 build environment."
+
+# Setup the build environment all in one pass. This helps us to reduce image
+# size by doing cleanup in the same layer as the setup.
+RUN apk add --no-cache --update --virtual .build-deps \
       g++ \
       gcc \
       git \
       make \
       musl-dev \
-    && rm -rf /var/cache/apk/*
-
-# Build and install Watcom package
-RUN cd /tmp \
+    # Build and install Watcom package
+    && cd /tmp \
     && git clone https://github.com/open-watcom/open-watcom-v2.git \
     && cd open-watcom-v2 \
     && echo "export OWNOBUILD=\"nt386 wgml\"" >> setvars.sh \
@@ -18,4 +24,9 @@ RUN cd /tmp \
     && ./build.sh \
     && cp build/binbuild/* /usr/local/bin \
     && cd / \
-    && rm -rf /tmp/open-watcom-v2
+    # Clean up after ourselves (do this in the same layer)
+    && rm -rf /tmp/open-watcom-v2 \
+    && apk del .build-deps \
+    && rm -rf /var/cache/apk/*
+
+CMD ["/bin/sh"]
