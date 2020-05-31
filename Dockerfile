@@ -2,7 +2,7 @@
 #
 # To build use:
 # docker build -t lapinlabs/watcom .
-FROM alpine:3.8
+FROM alpine:3.12
 MAINTAINER Chad Rempp <crempp@gmail.com>
 
 LABEL description="An OpenWatcom V2 build environment."
