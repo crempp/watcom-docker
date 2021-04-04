@@ -26,10 +26,17 @@ RUN cd /tmp \
     && echo "export OWGUINOBUILD=1" >> setvars.sh \
     # Comment out inclusion of wgml/builder.ctl to avoid Dosbox dependency -- this SHOULD NOT be necessary
     && sed '/\[ INCLUDE <OWSRCDIR>\/wgml\/builder.ctl \]/{s/^/#/}' -i bld/builder.ctl \
-    && ./build.sh \
-    && cp build/binbuild/* /usr/local/bin \
+    # buildrel.sh exists, but for reasons that are unclear, it doesn't end up actually copying anything
+    && OWRELROOT=/opt/watcom ./build.sh rel os_linuxx64 \
     && cd / \
     # Clean up after ourselves (do this in the same layer)
-    && rm -rf /tmp/open-watcom-v2 \
+    && rm -rf /tmp/open-watcom-v2
+
+ENV WATCOM=/opt/watcom
+ENV INCLUDE="$WATCOM/h"
+ENV PATH="$WATCOM/binl64:$WATCOM/binl:$PATH"
+
+# Finally, display installed binaries + version info in image build log
+RUN ls /opt/watcom/binl64 /opt/watcom/binl && wcl -v | grep Version
 
 CMD ["/bin/sh"]
