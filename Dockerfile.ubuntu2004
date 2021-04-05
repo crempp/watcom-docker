@@ -9,14 +9,22 @@ LABEL description="An OpenWatcom V2 build environment."
 
 # Setup the build environment all in one pass. This helps us to reduce image
 # size by doing cleanup in the same layer as the setup.
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get install -y \
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && env DEBIAN_FRONTEND=noninteractive apt-get install -yq \
       g++ \
       gcc \
       git \
       make \
+      software-properties-common \
+    && add-apt-repository -y ppa:dosemu2/ppa \
+    && apt-get update -y -qq \
+    && apt-get install -yq dosemu2 \
     && apt-get clean
+
+# Initialize DOSEMU
+RUN adduser --disabled-password --gecos "" dosemu \
+    && yes | su - dosemu -- /usr/bin/dosemu -dumb -quiet -E exitemu
 
 # Build and install Watcom package
 RUN cd /tmp \
